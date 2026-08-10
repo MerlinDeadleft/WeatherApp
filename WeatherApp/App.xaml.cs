@@ -19,6 +19,7 @@ public partial class App : Application
         var serviceCollection = new ServiceCollection();
 
         serviceCollection.AddSingleton<IDialogService, DialogService>();
+        serviceCollection.AddSingleton<ISettingsService, SettingsService>();
         
         serviceCollection.AddTransient<MainWindowViewModel>();
         serviceCollection.AddTransient<AboutWindowViewModel>();
