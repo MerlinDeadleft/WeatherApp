@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
+using WeatherApp.Services;
 using WeatherApp.ViewModels;
 
 namespace WeatherApp;
@@ -16,8 +17,11 @@ public partial class App : Application
         base.OnStartup(e);
         
         var serviceCollection = new ServiceCollection();
+
+        serviceCollection.AddSingleton<IDialogService, DialogService>();
         
         serviceCollection.AddTransient<MainWindowViewModel>();
+        serviceCollection.AddTransient<AboutWindowViewModel>();
         
         Services = serviceCollection.BuildServiceProvider();
     }

@@ -1,0 +1,25 @@
+<Window x:Class="WeatherApp.Windows.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:WeatherApp.Windows"
+        mc:Ignorable="d"
+        Title="About" Height="300" Width="400" ResizeMode="NoResize">
+    <StackPanel Margin="10">
+        <TextBlock FontSize="36">WeatherApp</TextBlock>
+        <TextBlock Text="{Binding AppVersion}" />
+        <TextBlock>
+            <Run Text="Created by " />
+            <Hyperlink Command="{Binding OpenGitHubProfileCommand}">MerlinDeadleft</Hyperlink>
+        </TextBlock>
+        <TextBlock>
+            <Run Text="This application's code can be found in this" />
+            <Hyperlink Command="{Binding OpenGitHubRepoCommand}">GitHub repository</Hyperlink>
+        </TextBlock>
+        <TextBlock Margin="0 20 0 0">
+            <Run Text="Weather data provided by "/>
+            <Hyperlink Command="{Binding OpenWttrWebsiteCommand}">wttr.in</Hyperlink>
+        </TextBlock>
+    </StackPanel>
+</Window>

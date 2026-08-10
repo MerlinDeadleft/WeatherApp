@@ -1,16 +1,22 @@
 using System.Windows;
 using System.Windows.Input;
 using WeatherApp.Helpers;
+using WeatherApp.Services;
 
 namespace WeatherApp.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    public ICommand ExitCommand { get; }
+    private IDialogService dialogService;
 
-    public MainWindowViewModel()
+    public ICommand ExitCommand { get; }
+    public ICommand OpenAboutWindowCommand { get; }
+
+    public MainWindowViewModel(IDialogService dialogService)
     {
+        this.dialogService = dialogService;
         ExitCommand = new RelayAction(ExecuteExitCommand);
+        OpenAboutWindowCommand = new RelayAction(ExecuteOpenAboutWindowCommand);
     }
 
     private void ExecuteExitCommand(object? parameter)
@@ -22,5 +28,10 @@ public class MainWindowViewModel : ViewModelBase
         }
 
         Application.Current.MainWindow?.Close();
+    }
+
+    private void ExecuteOpenAboutWindowCommand(object? parameter)
+    {
+        dialogService.ShowAboutWindow();
     }
 }
