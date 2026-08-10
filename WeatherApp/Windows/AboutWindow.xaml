@@ -5,9 +5,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:WeatherApp.Windows"
         mc:Ignorable="d"
-        Title="About" Height="300" Width="400" ResizeMode="NoResize">
+        Title="About" Height="200" Width="400" ResizeMode="NoResize">
     <StackPanel Margin="10">
-        <TextBlock FontSize="36">WeatherApp</TextBlock>
+        <TextBlock FontSize="36" Margin="-5 -7 0 0">WeatherApp</TextBlock>
         <TextBlock Text="{Binding AppVersion}" />
         <TextBlock>
             <Run Text="Created by " />
