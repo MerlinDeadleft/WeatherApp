@@ -8,6 +8,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Extensions.DependencyInjection;
+using WeatherApp.ViewModels;
 
 namespace WeatherApp;
 
@@ -19,5 +21,6 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        DataContext = App.Services.GetRequiredService<MainWindowViewModel>();
     }
 }
