@@ -13,6 +13,7 @@ public class AboutWindowViewModel
     public ICommand OpenGitHubRepoCommand { get; }
     public ICommand OpenWttrWebsiteCommand { get; }
     public ICommand OpenWttrGitHubCommand { get; }
+    public ICommand OpenPictogrammersWebsiteCommand { get; }
 
     public AboutWindowViewModel()
     {
@@ -23,6 +24,7 @@ public class AboutWindowViewModel
         OpenGitHubRepoCommand = new RelayAction(ExecuteOpenGitHubRepoCommand);
         OpenWttrWebsiteCommand = new RelayAction(ExecuteOpenWttrWebsiteCommand);
         OpenWttrGitHubCommand = new RelayAction(ExecuteOpenWttrGitHubCommand);
+        OpenPictogrammersWebsiteCommand = new RelayAction(ExecuteOpenPictogrammersWebsiteCommand);
     }
 
     private void ExecuteOpenGitHubProfileCommand(object? parameter)
@@ -58,6 +60,15 @@ public class AboutWindowViewModel
         {
             UseShellExecute = true,
             FileName = "https://github.com/chubin/wttr.in"
+        });
+    }
+
+    private void ExecuteOpenPictogrammersWebsiteCommand(object? parameter)
+    {
+        Process.Start(new ProcessStartInfo
+        {
+            UseShellExecute = true,
+            FileName = "https://pictogrammers.com/"
         });
     }
 }

@@ -21,5 +21,9 @@
             <Run Text="Weather data provided by "/>
             <Hyperlink Command="{Binding OpenWttrWebsiteCommand}">wttr.in</Hyperlink>
         </TextBlock>
+        <TextBlock>
+            <Run Text="Icons used from "/>
+            <Hyperlink Command="{Binding OpenPictogrammersWebsiteCommand}">Pictogrammers</Hyperlink>' Material Design Icons library
+        </TextBlock>
     </StackPanel>
 </Window>
