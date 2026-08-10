@@ -10,7 +10,7 @@
         <TextBlock FontSize="36" Margin="-5 -7 0 0">WeatherApp</TextBlock>
         <TextBlock Text="{Binding AppVersion}" />
         <TextBlock>
-            <Run Text="Created by " />
+            <Run Text="Created by" />
             <Hyperlink Command="{Binding OpenGitHubProfileCommand}">MerlinDeadleft</Hyperlink>
         </TextBlock>
         <TextBlock>
@@ -18,11 +18,11 @@
             <Hyperlink Command="{Binding OpenGitHubRepoCommand}">GitHub repository</Hyperlink>
         </TextBlock>
         <TextBlock Margin="0 20 0 0">
-            <Run Text="Weather data provided by "/>
+            <Run Text="Weather data provided by"/>
             <Hyperlink Command="{Binding OpenWttrWebsiteCommand}">wttr.in</Hyperlink>
         </TextBlock>
         <TextBlock>
-            <Run Text="Icons used from "/>
+            <Run Text="Icons used from"/>
             <Hyperlink Command="{Binding OpenPictogrammersWebsiteCommand}">Pictogrammers</Hyperlink>' Material Design Icons library
         </TextBlock>
     </StackPanel>
