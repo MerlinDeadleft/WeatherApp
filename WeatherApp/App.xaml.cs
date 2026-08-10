@@ -23,6 +23,7 @@ public partial class App : Application
         
         serviceCollection.AddTransient<MainWindowViewModel>();
         serviceCollection.AddTransient<AboutWindowViewModel>();
+        serviceCollection.AddTransient<SidebarViewModel>();
         
         Services = serviceCollection.BuildServiceProvider();
     }

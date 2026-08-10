@@ -19,6 +19,27 @@
         <XamlRuntime>Wpf</XamlRuntime>
         <SubType>Designer</SubType>
       </Page>
+      <Page Update="UserControls\Sidebar\Sidebar.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Assets\Images\pencil.png" />
+      <Resource Include="Assets\Images\pencil.png" />
+      <None Remove="Assets\Images\plus.png" />
+      <None Remove="Assets\Images\arrow-down-thick.png" />
+      <Resource Include="Assets\Images\arrow-down-thick.png" />
+      <None Remove="Assets\Images\arrow-up-thick.png" />
+      <Resource Include="Assets\Images\arrow-up-thick.png" />
+      <None Remove="Assets\Images\close-thick.png" />
+      <Resource Include="Assets\Images\close-thick.png" />
+      <None Remove="Assets\Images\check-bold.png" />
+      <Resource Include="Assets\Images\check-bold.png" />
+      <None Remove="Assets\Images\plus-thick.png" />
+      <Resource Include="Assets\Images\plus-thick.png" />
     </ItemGroup>
 
 </Project>

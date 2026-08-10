@@ -1,0 +1,47 @@
+<UserControl x:Class="WeatherApp.UserControls.Sidebar.Sidebar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:WeatherApp.UserControls.Sidebar"
+             xmlns:conv="clr-namespace:WeatherApp.Converters"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="auto" Width="Auto" BorderBrush="Gray" BorderThickness="0,0,2,0">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <conv:BooleanToInvisibilityConverter x:Key="BooleanToInvisibilityConverter" />
+    </UserControl.Resources>
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10, 5">
+            <Button Margin="0,0,5,0"
+                    Command="{Binding AddLocationCommand}"
+                    Visibility="{Binding IsSidebarEditActive, Converter={StaticResource BooleanToInvisibilityConverter}}">
+                <Image Source="/Assets/Images/plus-thick.png" Height="24" />
+            </Button>
+            <Button ToolTip="Edit location list"
+                    Command="{Binding EnableEditCommand}"
+                    Visibility="{Binding IsSidebarEditActive, Converter={StaticResource BooleanToInvisibilityConverter}}">
+                <Image Source="/Assets/Images/pencil.png" Height="24" />
+            </Button>
+            <Button Margin="0,0,5,0" ToolTip="Save Changes"
+                    Command="{Binding SaveChangesCommand}"
+                    Visibility="{Binding IsSidebarEditActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Image Source="/Assets/Images/check-bold.png" Height="24" />
+            </Button>
+            <Button ToolTip="Discard Changes"
+                    Command="{Binding DiscardChangesCommand}"
+                    Visibility="{Binding IsSidebarEditActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Image Source="/Assets/Images/close-thick.png" Height="24" />
+            </Button>
+        </StackPanel>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding SavedLocationViewModels}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <local:SidebarItem />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>
