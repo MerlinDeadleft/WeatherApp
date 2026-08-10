@@ -1,6 +1,5 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Windows;
+﻿using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace WeatherApp;
 
@@ -9,4 +8,14 @@ namespace WeatherApp;
 /// </summary>
 public partial class App : Application
 {
+    public static ServiceProvider Services { get; private set; }
+
+    protected override void OnStartup(StartupEventArgs e)
+    {
+        base.OnStartup(e);
+        
+        var serviceCollection = new ServiceCollection();
+        
+        Services = serviceCollection.BuildServiceProvider();
+    }
 }
