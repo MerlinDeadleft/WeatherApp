@@ -3,7 +3,6 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using WeatherApp.Core;
-using WeatherApp.Messages;
 using WeatherApp.Models;
 using WeatherApp.Services;
 
@@ -11,9 +10,10 @@ namespace WeatherApp.ViewModels;
 
 public class SidebarViewModel : ViewModelBase
 {
-    private readonly IMessenger messenger;
+    
     private readonly ISettingsService settingsService;
-    private readonly SettingsModel settingsModel;
+    
+    private SettingsModel settingsModel;
     private List<SidebarChange> currentChanges = new List<SidebarChange>();
     private readonly Regex locationNameRules = new Regex(@"^[\p{L}\p{N} ,.'’ʻ()/&–~-]+$");
     private SidebarItemViewModel? selectedSidebarItem;
@@ -76,11 +76,13 @@ public class SidebarViewModel : ViewModelBase
         }
     }
 
-    public SidebarViewModel(ISettingsService settingsServiceService, IMessenger messenger)
+    public SidebarViewModel(ISettingsService settingsService)
     {
-        this.messenger = messenger;
-        settingsService = settingsServiceService;
-        settingsModel = settingsServiceService.LoadSettings();
+        this.settingsService = settingsService;
+        this.settingsService.OnSettingsUpdated += HandleSettingsUpdate;
+        settingsModel = settingsService.LoadSettings();
+        
+        
         var viewModels = settingsModel.Locations.Select(CreateSidebarItemViewModel);
         SavedLocationViewModels = new ObservableCollection<SidebarItemViewModel>(viewModels);
         SelectSidebarItem(SavedLocationViewModels.First());
@@ -125,7 +127,7 @@ public class SidebarViewModel : ViewModelBase
     {
         SavedLocationViewModels.Add(CreateSidebarItemViewModel(AddedLocationName));
         settingsModel.Locations.Add(AddedLocationName);
-        settingsService.SaveSettings(settingsModel);
+        settingsService.UpdateSetting(ISettingsService.Setting.Locations, settingsModel.Locations);
         DisableAddingLocation();
     }
 
@@ -164,7 +166,7 @@ public class SidebarViewModel : ViewModelBase
         }
 
         currentChanges.Clear();
-        settingsService.SaveSettings(settingsModel);
+        settingsService.UpdateSetting(ISettingsService.Setting.Locations, settingsModel.Locations);
         IsSidebarEditActive = false;
     }
 
@@ -263,7 +265,12 @@ public class SidebarViewModel : ViewModelBase
         selectedSidebarItem?.IsSelected = false;
         selectedSidebarItem = item;
         selectedSidebarItem.IsSelected = true;
-        messenger.Publish(new LocationSelectMessage(item.LocationName));
+        weatherService.SelectedLocation = item.LocationName;
+    }
+
+    private void HandleSettingsUpdate()
+    {
+        settingsModel = settingsService.LoadSettings();
     }
 
     private class SidebarChange
