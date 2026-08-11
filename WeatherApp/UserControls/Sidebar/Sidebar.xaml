@@ -12,9 +12,10 @@
         <conv:BooleanToInvisibilityConverter x:Key="BooleanToInvisibilityConverter" />
     </UserControl.Resources>
     <DockPanel>
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10, 5">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10, 5"
+                    Visibility="{Binding IsAddingLocationActive, Converter={StaticResource BooleanToInvisibilityConverter}}">
             <Button Margin="0,0,5,0"
-                    Command="{Binding AddLocationCommand}"
+                    Command="{Binding EnableAddingLocationCommand}"
                     Visibility="{Binding IsSidebarEditActive, Converter={StaticResource BooleanToInvisibilityConverter}}">
                 <Image Source="/Assets/Images/plus-thick.png" Height="24" />
             </Button>
@@ -33,6 +34,42 @@
                     Visibility="{Binding IsSidebarEditActive, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Image Source="/Assets/Images/close-thick.png" Height="24" />
             </Button>
+        </StackPanel>
+        <StackPanel Margin="10,5" DockPanel.Dock="Bottom"
+                    Visibility="{Binding IsAddingLocationActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock>Enter Location To Add:</TextBlock>
+            <TextBlock Foreground="Red"
+                       Visibility="{Binding IsInvalidNameEntered, Converter={StaticResource BooleanToVisibilityConverter}}">
+                Invalid Text Detected.<LineBreak />
+                Please enter one of the following:<LineBreak />
+                - City Name<LineBreak />
+                - Zip/Postal Code<LineBreak />
+                - Airport Code (JFK or MUC)<LineBreak />
+                - Landmark (~ Statue of Liberty)<LineBreak />
+                - GPS Coordinates (48.85,-2.35)
+            </TextBlock>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox VerticalContentAlignment="Center"
+                         Text="{Binding AddedLocationName, UpdateSourceTrigger=PropertyChanged}"
+                         IsVisibleChanged="AddLocationTextBox_OnIsVisibleChanged">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding AddLocationCommand}" />
+                        <KeyBinding Key="Return" Command="{Binding AddLocationCommand}" />
+                        <KeyBinding Key="Escape" Command="{Binding CancelAddLocationCommand}" />
+                    </TextBox.InputBindings>
+                </TextBox>
+                <Button Grid.Column="1" Margin="5,0,0,0" Command="{Binding AddLocationCommand}">
+                    <Image Source="/Assets/Images/check-bold.png" Height="24" />
+                </Button>
+                <Button Grid.Column="2" Margin="5,0,0,0" Command="{Binding CancelAddLocationCommand}">
+                    <Image Source="/Assets/Images/close-thick.png" Height="24" />
+                </Button>
+            </Grid>
         </StackPanel>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding SavedLocationViewModels}">
