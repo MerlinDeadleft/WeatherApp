@@ -4,8 +4,8 @@ namespace WeatherApp.Models;
 
 public class WeatherModel
 {
-    public string CityName { get; set; } = "";
-    public WeatherData Data { get; set; }
+    public string LocationName { get; set; } = "";
+    public WeatherData? Data { get; set; }
 }
 
 public struct WeatherData

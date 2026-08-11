@@ -11,6 +11,7 @@ namespace WeatherApp.ViewModels;
 public class SidebarViewModel : ViewModelBase
 {
     
+    private readonly IWeatherService weatherService;
     private readonly ISettingsService settingsService;
     
     private SettingsModel settingsModel;
@@ -76,8 +77,9 @@ public class SidebarViewModel : ViewModelBase
         }
     }
 
-    public SidebarViewModel(ISettingsService settingsService)
+    public SidebarViewModel(ISettingsService settingsService, IWeatherService weatherService)
     {
+        this.weatherService = weatherService;
         this.settingsService = settingsService;
         this.settingsService.OnSettingsUpdated += HandleSettingsUpdate;
         settingsModel = settingsService.LoadSettings();
@@ -252,7 +254,7 @@ public class SidebarViewModel : ViewModelBase
 
     private bool CanSelectSidebarItem(SidebarItemViewModel? item)
     {
-        return !IsSidebarEditActive && item != selectedSidebarItem;
+        return !IsSidebarEditActive && item != selectedSidebarItem && !weatherService.IsFetching;
     }
 
     private void SelectSidebarItem(SidebarItemViewModel? item)

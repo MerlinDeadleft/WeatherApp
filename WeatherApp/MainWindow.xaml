@@ -4,19 +4,22 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:sb="clr-namespace:WeatherApp.UserControls.Sidebar"
+        xmlns:wc="clr-namespace:WeatherApp.UserControls.Weather"
         mc:Ignorable="d"
-        Title="Weather App" Height="700" Width="1000">
+        Title="Weather App" Height="700" Width="1000" MinHeight="700" MinWidth="1000">
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="E_xit" Command="{Binding ExitCommand}" InputGestureText="Alt+F4" />
+            </MenuItem>
+            <MenuItem Header="_Options">
+                <MenuItem Header="Use _Metric Units" IsCheckable="True" IsChecked="{Binding UseMetricUnits}" />
             </MenuItem>
             <MenuItem Header="_Help">
                 <MenuItem Header="_About" Command="{Binding OpenAboutWindowCommand}" />
             </MenuItem>
         </Menu>
         <sb:Sidebar DockPanel.Dock="Left" />
-        <Grid>
-        </Grid>
+        <wc:WeatherDashboard />
     </DockPanel>
 </Window>
