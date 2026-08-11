@@ -27,12 +27,14 @@ public class SettingsService : ISettingsService
         if (File.Exists(Path.Combine(SettingsFileDirectory, SettingsFileName)))
         {
             var json = File.ReadAllText(Path.Combine(SettingsFileDirectory, SettingsFileName));
-            return JsonSerializer.Deserialize<SettingsModel>(json);
+            settingsModel = JsonSerializer.Deserialize<SettingsModel>(json);
+            return settingsModel.Value;
         }
 
         settingsModel = new SettingsModel()
         {
             Locations = new List<string> { SettingsModel.IpBasedLocationName },
+            UseMetric = true
         };
 
         SaveSettings(settingsModel.Value);
