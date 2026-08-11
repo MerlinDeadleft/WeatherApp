@@ -33,7 +33,6 @@ public class SettingsService : ISettingsService
         settingsModel = new SettingsModel()
         {
             Locations = new List<string> { SettingsModel.IpBasedLocationName },
-            LastViewedLocation = SettingsModel.IpBasedLocationName
         };
 
         SaveSettings(settingsModel.Value);
