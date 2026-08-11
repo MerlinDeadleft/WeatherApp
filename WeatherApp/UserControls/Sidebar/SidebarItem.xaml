@@ -5,11 +5,34 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:WeatherApp.UserControls.Sidebar"
              mc:Ignorable="d"
-             d:DesignHeight="40" d:DesignWidth="300" MinWidth="300" Height="40" BorderBrush="LightGray" BorderThickness="0,0,0,2">
+             d:DesignHeight="40" d:DesignWidth="300" MinWidth="300" Height="40" BorderBrush="LightGray"
+             BorderThickness="0,0,0,2">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
     <Grid>
+        <Grid.Style>
+            <Style TargetType="Grid">
+                <Setter Property="Background" Value="Transparent" />
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}"
+                                       Value="True" />
+                            <Condition Binding="{Binding IsSidebarEditActive}" Value="False" />
+                        </MultiDataTrigger.Conditions>
+                        <Setter Property="Background" Value="#BEE6FD" />
+                    </MultiDataTrigger>
+                    
+                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                        <Setter Property="Background" Value="#E6E6E6"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Style>
+        <Grid.InputBindings>
+            <MouseBinding MouseAction="LeftClick" Command="{Binding SelectItemCommand}" />
+        </Grid.InputBindings>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />

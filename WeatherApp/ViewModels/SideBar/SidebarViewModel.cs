@@ -14,6 +14,7 @@ public class SidebarViewModel : ViewModelBase
     private readonly SettingsModel settingsModel;
     private List<SidebarChange> currentChanges = new List<SidebarChange>();
     private readonly Regex locationNameRules = new Regex(@"^[\p{L}\p{N} ,.'’ʻ()/&–~-]+$");
+    private SidebarItemViewModel? selectedSidebarItem;
 
     public ICommand EnableAddingLocationCommand { get; }
     public ICommand AddLocationCommand { get; }
@@ -79,6 +80,7 @@ public class SidebarViewModel : ViewModelBase
         settingsModel = settingsServiceService.LoadSettings();
         var viewModels = settingsModel.Locations.Select(CreateSidebarItemViewModel);
         SavedLocationViewModels = new ObservableCollection<SidebarItemViewModel>(viewModels);
+        SelectSidebarItem(SavedLocationViewModels.First());
 
         EnableAddingLocationCommand = new RelayAction(ExecuteEnableAddingLocationCommand);
         AddLocationCommand = new RelayAction(ExecuteAddLocationCommand, CanExecuteAddLocationCommand);
@@ -93,7 +95,8 @@ public class SidebarViewModel : ViewModelBase
         return new SidebarItemViewModel(locationName,
             MoveSidebarItemUp, CanSidebarItemMoveUp,
             MoveSidebarItemDown, CanSidebarItemMoveDow,
-            RemoveSidebarItem, CanRemoveSidebarItem);
+            RemoveSidebarItem, CanRemoveSidebarItem,
+            SelectSidebarItem, CanSelectSidebarItem);
     }
 
     private void ExecuteEnableAddingLocationCommand(object? parameter)
@@ -146,6 +149,10 @@ public class SidebarViewModel : ViewModelBase
                     break;
                 case SidebarChange.OperationType.Remove:
                     settingsModel.Locations.RemoveAt(change.FromIndex);
+                    if(change.Item == selectedSidebarItem)
+                    {
+                        SelectSidebarItem(SavedLocationViewModels.First());
+                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -235,6 +242,22 @@ public class SidebarViewModel : ViewModelBase
             FromIndex = index,
             Item = item
         });
+    }
+
+    private bool CanSelectSidebarItem(SidebarItemViewModel? item)
+    {
+        return !IsSidebarEditActive && item != selectedSidebarItem;
+    }
+
+    private void SelectSidebarItem(SidebarItemViewModel? item)
+    {
+        if(IsAddingLocationActive)
+        {
+            DisableAddingLocation();
+        }
+        selectedSidebarItem?.IsSelected = false;
+        selectedSidebarItem = item;
+        selectedSidebarItem.IsSelected = true;
     }
 
     private class SidebarChange
