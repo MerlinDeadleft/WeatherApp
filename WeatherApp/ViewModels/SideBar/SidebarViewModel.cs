@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using WeatherApp.Core;
+using WeatherApp.Messages;
 using WeatherApp.Models;
 using WeatherApp.Services;
 
@@ -10,6 +11,7 @@ namespace WeatherApp.ViewModels;
 
 public class SidebarViewModel : ViewModelBase
 {
+    private readonly IMessenger messenger;
     private readonly ISettingsService settingsService;
     private readonly SettingsModel settingsModel;
     private List<SidebarChange> currentChanges = new List<SidebarChange>();
@@ -74,8 +76,9 @@ public class SidebarViewModel : ViewModelBase
         }
     }
 
-    public SidebarViewModel(ISettingsService settingsServiceService)
+    public SidebarViewModel(ISettingsService settingsServiceService, IMessenger messenger)
     {
+        this.messenger = messenger;
         settingsService = settingsServiceService;
         settingsModel = settingsServiceService.LoadSettings();
         var viewModels = settingsModel.Locations.Select(CreateSidebarItemViewModel);
@@ -153,6 +156,7 @@ public class SidebarViewModel : ViewModelBase
                     {
                         SelectSidebarItem(SavedLocationViewModels.First());
                     }
+
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -255,9 +259,11 @@ public class SidebarViewModel : ViewModelBase
         {
             DisableAddingLocation();
         }
+
         selectedSidebarItem?.IsSelected = false;
         selectedSidebarItem = item;
         selectedSidebarItem.IsSelected = true;
+        messenger.Publish(new LocationSelectMessage(item.LocationName));
     }
 
     private class SidebarChange

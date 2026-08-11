@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
+using WeatherApp.Core;
 using WeatherApp.Services;
 using WeatherApp.ViewModels;
 
@@ -20,6 +21,7 @@ public partial class App : Application
 
         serviceCollection.AddSingleton<IDialogService, DialogService>();
         serviceCollection.AddSingleton<ISettingsService, SettingsService>();
+        serviceCollection.AddSingleton<IMessenger, Messenger>();
         
         serviceCollection.AddTransient<MainWindowViewModel>();
         serviceCollection.AddTransient<AboutWindowViewModel>();
