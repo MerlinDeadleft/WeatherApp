@@ -2,7 +2,7 @@ using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
-using WeatherApp.Helpers;
+using WeatherApp.Core;
 using WeatherApp.Models;
 using WeatherApp.Services;
 

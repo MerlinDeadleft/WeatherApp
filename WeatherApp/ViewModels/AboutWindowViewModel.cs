@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Input;
-using WeatherApp.Helpers;
+using WeatherApp.Core;
 
 namespace WeatherApp.ViewModels;
 

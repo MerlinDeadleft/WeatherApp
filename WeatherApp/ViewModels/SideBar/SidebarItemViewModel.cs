@@ -1,5 +1,5 @@
 using System.Windows.Input;
-using WeatherApp.Helpers;
+using WeatherApp.Core;
 
 namespace WeatherApp.ViewModels;
 

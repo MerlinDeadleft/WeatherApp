@@ -1,6 +1,6 @@
 using System.Windows;
 using System.Windows.Input;
-using WeatherApp.Helpers;
+using WeatherApp.Core;
 using WeatherApp.Services;
 
 namespace WeatherApp.ViewModels;

@@ -1,6 +1,6 @@
 using System.Windows.Input;
 
-namespace WeatherApp.Helpers;
+namespace WeatherApp.Core;
 
 public class RelayAction : ICommand
 {
