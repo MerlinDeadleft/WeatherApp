@@ -11,6 +11,9 @@
         <DataTemplate DataType="{x:Type vm:CurrentWeatherViewModel}">
             <local:CurrentWeather />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:WeatherForecastViewModel}">
+            <local:WeatherForecast />
+        </DataTemplate>
         <Style TargetType="TextBlock">
             <Setter Property="FontSize" Value="16" />
         </Style>
@@ -18,6 +21,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="220" />
+            <RowDefinition Height="2" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid>
@@ -36,8 +40,9 @@
                 <Image Source="/Assets/Images/refresh.png" />
             </Button>
         </Grid>
-        <ScrollViewer Grid.Row="1" Background="LightBlue" VerticalScrollBarVisibility="Auto">
-
+        <WrapPanel Grid.Row="1" Background="LightGray" />
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" BorderThickness="10">
+            <ContentControl Content="{Binding WeatherForecastViewModel}" />
         </ScrollViewer>
     </Grid>
 </UserControl>

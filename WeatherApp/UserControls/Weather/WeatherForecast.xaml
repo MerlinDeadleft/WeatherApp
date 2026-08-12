@@ -1,0 +1,19 @@
+<UserControl x:Class="WeatherApp.UserControls.Weather.WeatherForecast"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:WeatherApp.UserControls.Weather"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="800">
+    <StackPanel Margin="5">
+        <TextBlock FontSize="24">Forecast</TextBlock>
+        <ItemsControl ItemsSource="{Binding WeatherForecasts}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <local:WeatherForecastItem />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </StackPanel>
+</UserControl>

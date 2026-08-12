@@ -50,6 +50,8 @@ public class HourlyConditions : ConditionsBase
     public string Time { get; set; } = "";
     public int TempC { get; set; }
     public int TempF { get; set; }
+    public int WindGustKmph { get; set; }
+    public int WindGustMiles { get; set; }
 }
 
 public struct LocationData

@@ -11,12 +11,14 @@ public class WeatherDashboardViewModel : ViewModelBase
     private WeatherModel? weatherModel = null;
     
     public CurrentWeatherViewModel CurrentWeatherViewModel { get; }
+    public WeatherForecastViewModel WeatherForecastViewModel { get; }
     
     public ICommand RefreshDataCommand { get; }
 
-    public WeatherDashboardViewModel(IWeatherService weatherService, CurrentWeatherViewModel currentWeatherViewModel)
+    public WeatherDashboardViewModel(IWeatherService weatherService, CurrentWeatherViewModel currentWeatherViewModel, WeatherForecastViewModel weatherForecastViewModel)
     {
         CurrentWeatherViewModel = currentWeatherViewModel;
+        WeatherForecastViewModel = weatherForecastViewModel;
         
         this.weatherService = weatherService;
         this.weatherService.SelectedLocationChanged += HandleSelectedLocationChanged;
@@ -40,6 +42,7 @@ public class WeatherDashboardViewModel : ViewModelBase
     private void PushWeatherModelToViewModels()
     {
         CurrentWeatherViewModel.UpdateWeatherModel(weatherModel);
+        WeatherForecastViewModel.UpdateWeatherModel(weatherModel);
     }
 
     private void HandleSelectedLocationChanged()

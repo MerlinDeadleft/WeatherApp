@@ -28,6 +28,7 @@ public partial class App : Application
         serviceCollection.AddTransient<SidebarViewModel>();
         serviceCollection.AddTransient<WeatherDashboardViewModel>();
         serviceCollection.AddTransient<CurrentWeatherViewModel>();
+        serviceCollection.AddTransient<WeatherForecastViewModel>();
         
         Services = serviceCollection.BuildServiceProvider();
     }
