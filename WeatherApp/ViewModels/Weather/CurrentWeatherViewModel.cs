@@ -1,3 +1,4 @@
+using System.Globalization;
 using WeatherApp.Core;
 using WeatherApp.Models;
 using WeatherApp.Services;
@@ -12,6 +13,7 @@ public class CurrentWeatherViewModel : ViewModelBase
 
     public string LocationName => GetLocationName();
     public string LocationData => GetLocationData();
+    public string ObservationTime => GetObservationTime();
     public string WeatherIconUrl => GetWeatherIconUrl();
     public string Temperature => GetTemperature();
     public string Description => GetWeatherDescription();
@@ -52,6 +54,22 @@ public class CurrentWeatherViewModel : ViewModelBase
 
         var locationData = weatherModel.Data.Value.LocationData[0];
         return $"{locationData.AreaName[0].Value}, {locationData.Region[0].Value}, {locationData.Country[0].Value}";
+    }
+
+    private string GetObservationTime()
+    {
+        if(weatherModel == null || weatherModel.Data == null)
+            return "";
+
+        var utcTime = DateTime.ParseExact(
+            weatherModel.Data.Value.CurrentCondition[0].ObservationTime,
+            "hh:mm tt",
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
+        
+        var localTime = utcTime.ToLocalTime();
+
+        return $"Weather data timestamp: {localTime:g}";
     }
 
     private string GetWeatherIconUrl()
@@ -108,7 +126,7 @@ public class CurrentWeatherViewModel : ViewModelBase
         var precipitation = settingsModel.UseMetric
             ? $"{weatherModel.Data.Value.CurrentCondition[0].PrecipMM:0.0#} mm"
             : $"{weatherModel.Data.Value.CurrentCondition[0].PrecipInches:0.0#} in";
-            
+
         return $"Precipitation: {precipitation}";
     }
 
@@ -120,7 +138,7 @@ public class CurrentWeatherViewModel : ViewModelBase
         var windSpeed = settingsModel.UseMetric
             ? $"{weatherModel.Data.Value.CurrentCondition[0].WindSpeedKmph} km/h"
             : $"{weatherModel.Data.Value.CurrentCondition[0].WindSpeedMiles} mph";
-        
+
         return $"{windSpeed} {weatherModel.Data.Value.CurrentCondition[0].WindDir16Point}";
     }
 

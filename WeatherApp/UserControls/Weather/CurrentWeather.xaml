@@ -5,16 +5,23 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:WeatherApp.UserControls.Weather"
              mc:Ignorable="d"
-             d:DesignHeight="200" d:DesignWidth="800">
+             d:DesignHeight="300" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16" />
+        </Style>
+    </UserControl.Resources>
     <Grid Margin="5">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <TextBlock FontSize="24" Text="{Binding LocationName, Mode=OneWay}" />
-        <TextBlock Grid.Row="1" FontSize="16" Text="{Binding LocationData, Mode=OneWay}" />
-        <Grid Grid.Row="2" Margin="0,15,0,0">
+        <TextBlock Grid.Row="1" Text="{Binding LocationData, Mode=OneWay}" />
+        <TextBlock Grid.Row="2" FontSize="12" Text="{Binding ObservationTime}" />
+        <Grid Grid.Row="3" Margin="0,15,0,0">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="120" />
@@ -29,10 +36,10 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel>
                         <TextBlock Text="{Binding Temperature}" FontSize="24" />
-                        <TextBlock Text="{Binding Description}" FontSize="16" />
-                        <TextBlock Text="{Binding FeelsLikeTemperature}" FontSize="16" />
-                        <TextBlock Text="{Binding Humidity}" FontSize="16" />
-                        <TextBlock Text="{Binding Precipitation}" FontSize="16" />
+                        <TextBlock Text="{Binding Description}" />
+                        <TextBlock Text="{Binding FeelsLikeTemperature}" />
+                        <TextBlock Text="{Binding Humidity}" />
+                        <TextBlock Text="{Binding Precipitation}" />
                     </StackPanel>
                     <StackPanel Grid.Column="1" Margin="5,0,0,0">
                         <StackPanel Orientation="Horizontal">
@@ -54,7 +61,7 @@
                                 </Image.RenderTransform>
                             </Image>
                         </StackPanel>
-                        <TextBlock Text="{Binding WindSpeedAndDirection}" FontSize="16" VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding WindSpeedAndDirection}" VerticalAlignment="Center" />
                     </StackPanel>
                 </Grid>
             </Grid>
