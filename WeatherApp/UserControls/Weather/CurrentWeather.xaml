@@ -24,14 +24,37 @@
                 <Grid Grid.Column="1" Margin="5,0,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <StackPanel>
                         <TextBlock Text="{Binding Temperature}" FontSize="24" />
-                        <TextBlock Text="{Binding Description}" FontSize="16"/>
-                        <TextBlock Text="{Binding FeelsLikeTemperature}" FontSize="16"/>
-                        <TextBlock Text="{Binding Humidity}" FontSize="16"/>
-                        <TextBlock Text="{Binding Precipitation}" FontSize="16"/>
+                        <TextBlock Text="{Binding Description}" FontSize="16" />
+                        <TextBlock Text="{Binding FeelsLikeTemperature}" FontSize="16" />
+                        <TextBlock Text="{Binding Humidity}" FontSize="16" />
+                        <TextBlock Text="{Binding Precipitation}" FontSize="16" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock FontSize="24">Wind</TextBlock>
+                            <Image Source="/Assets/Images/navigation.png" Height="30" Margin="5,0,0,0">
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding LocationData}" Value="">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                                <Image.RenderTransform>
+                                    <RotateTransform CenterX="15" CenterY="15"
+                                                     Angle="{Binding WindDirectionArrowRotation}" />
+                                </Image.RenderTransform>
+                            </Image>
+                        </StackPanel>
+                        <TextBlock Text="{Binding WindSpeedAndDirection}" FontSize="16" VerticalAlignment="Center" />
                     </StackPanel>
                 </Grid>
             </Grid>

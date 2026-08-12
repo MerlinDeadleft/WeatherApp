@@ -18,6 +18,8 @@ public class CurrentWeatherViewModel : ViewModelBase
     public string FeelsLikeTemperature => GetFeelsLikeTemperature();
     public string Humidity => GetHumidity();
     public string Precipitation => GetPrecipitation();
+    public string WindSpeedAndDirection => GetWindSpeedAndDirection();
+    public int WindDirectionArrowRotation => GetWindDirectionArrowRotation();
 
     public CurrentWeatherViewModel(ISettingsService settingsService)
     {
@@ -108,6 +110,28 @@ public class CurrentWeatherViewModel : ViewModelBase
             : $"{weatherModel.Data.Value.CurrentCondition[0].PrecipInches:0.0#} in";
             
         return $"Precipitation: {precipitation}";
+    }
+
+    private string GetWindSpeedAndDirection()
+    {
+        if(weatherModel == null || weatherModel.Data == null)
+            return "";
+
+        var windSpeed = settingsModel.UseMetric
+            ? $"{weatherModel.Data.Value.CurrentCondition[0].WindSpeedKmph} km/h"
+            : $"{weatherModel.Data.Value.CurrentCondition[0].WindSpeedMiles} mph";
+        
+        return $"{windSpeed} {weatherModel.Data.Value.CurrentCondition[0].WindDir16Point}";
+    }
+
+    private int GetWindDirectionArrowRotation()
+    {
+        if(weatherModel == null || weatherModel.Data == null)
+            return 0;
+
+        // Add 180 as arrow image points up by default. Arrow would otherwise point in the direction
+        // wind comes from instead of where it's going
+        return weatherModel.Data.Value.CurrentCondition[0].WindDirDegree + 180;
     }
 
     private void HandleSettingsUpdated()

@@ -1,5 +1,4 @@
 using System.Windows.Input;
-using Microsoft.Extensions.DependencyInjection;
 using WeatherApp.Core;
 using WeatherApp.Models;
 using WeatherApp.Services;
