@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:WeatherApp.UserControls.Sidebar"
              mc:Ignorable="d"
-             d:DesignHeight="40" d:DesignWidth="300" MinWidth="300" Height="40" BorderBrush="LightGray"
+             d:DesignHeight="40" d:DesignWidth="300" MinWidth="250" Height="40" BorderBrush="LightGray"
              BorderThickness="0,0,0,2">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -40,7 +40,7 @@
             <ColumnDefinition Width="30" />
             <ColumnDefinition Width="30" />
         </Grid.ColumnDefinitions>
-        <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" FontSize="18" Text="{Binding LocationName}" />
+        <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" FontSize="16" Text="{Binding LocationName}" />
         <Button Grid.Column="2" Height="24" Width="24" ToolTip="Move Up" Command="{Binding MoveUpCommand}"
                 Visibility="{Binding IsSidebarEditActive, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Image Source="/Assets/Images/arrow-up-thick.png" />
