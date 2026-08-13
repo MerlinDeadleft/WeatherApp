@@ -5,7 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:WeatherApp.Windows"
         mc:Ignorable="d"
-        Title="About" Height="200" Width="400" ResizeMode="NoResize">
+        Title="About" Height="530" Width="600" ResizeMode="NoResize">
     <StackPanel Margin="10">
         <TextBlock FontSize="36" Margin="-5 -7 0 0">WeatherApp</TextBlock>
         <TextBlock Text="{Binding AppVersion}" />
@@ -18,12 +18,27 @@
             <Hyperlink Command="{Binding OpenGitHubRepoCommand}">GitHub repository</Hyperlink>
         </TextBlock>
         <TextBlock Margin="0 20 0 0">
-            <Run Text="Weather data provided by"/>
+            <Run Text="Weather data provided by" />
             <Hyperlink Command="{Binding OpenWttrWebsiteCommand}">wttr.in</Hyperlink>
         </TextBlock>
         <TextBlock>
-            <Run Text="Icons used from"/>
+            <Run Text="Icons used from" />
             <Hyperlink Command="{Binding OpenPictogrammersWebsiteCommand}">Pictogrammers</Hyperlink>' Material Design Icons library
         </TextBlock>
+        <Border Margin="0,10,0,0" BorderBrush="LightGray" BorderThickness="1">
+            <TextBlock Margin="5" TextWrapping="Wrap">
+                MIT License<LineBreak />
+                <LineBreak />
+                Copyright (c) 2026 MerlinDeadleft<LineBreak />
+                <LineBreak />
+                Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+                <LineBreak />
+                <LineBreak />
+                The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+                <LineBreak />
+                <LineBreak />
+                THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+            </TextBlock>
+        </Border>
     </StackPanel>
 </Window>
