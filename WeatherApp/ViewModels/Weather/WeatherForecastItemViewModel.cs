@@ -31,6 +31,10 @@ public class WeatherForecastItemViewModel : ViewModelBase, IDisposable
     public void Dispose()
     {
         settingsService.OnSettingsUpdated -= HandleSettingsUpdated;
+        foreach(var viewModel in HourlyWeatherForecasts)
+        {
+            viewModel.Dispose();
+        }
     }
 
     private string GetForecastDate()

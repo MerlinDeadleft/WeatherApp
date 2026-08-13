@@ -7,21 +7,26 @@ namespace WeatherApp.ViewModels.Weather;
 
 public class WeatherForecastViewModel : ViewModelBase
 {
-    private IWeatherForecastItemViewModelFactory weatherItemViewModelFactory;
+    private IWeatherForecastItemViewModelFactory weatherForecastItemViewModelFactory;
     private WeatherModel? weatherModel;
 
-    public ObservableCollection<WeatherForecastItemViewModel> WeatherForecasts { get; private set; }
+    public ObservableCollection<WeatherForecastItemViewModel> WeatherForecasts { get; private set; } = new ObservableCollection<WeatherForecastItemViewModel>();
 
     public WeatherForecastViewModel(IWeatherForecastItemViewModelFactory weatherForecastItemViewModelFactory)
     {
-        this.weatherItemViewModelFactory = weatherForecastItemViewModelFactory;
+        this.weatherForecastItemViewModelFactory = weatherForecastItemViewModelFactory;
     }
-    
+
     public void UpdateWeatherModel(WeatherModel? weatherModel)
     {
         this.weatherModel = weatherModel;
         if(weatherModel == null)
         {
+            foreach(var viewModel in WeatherForecasts)
+            {
+                viewModel.Dispose();
+            }
+
             WeatherForecasts?.Clear();
             return;
         }
@@ -33,6 +38,6 @@ public class WeatherForecastViewModel : ViewModelBase
 
     private WeatherForecastItemViewModel CreateWeatherForecastItemViewModels(ForecastData forecastData)
     {
-        return weatherItemViewModelFactory.Create(forecastData);
+        return weatherForecastItemViewModelFactory.Create(forecastData);
     }
 }
