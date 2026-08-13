@@ -41,7 +41,7 @@
             </Button>
         </Grid>
         <WrapPanel Grid.Row="1" Background="LightGray" />
-        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" BorderThickness="10">
+        <ScrollViewer Name="ForecastScrollViewer" Grid.Row="2" VerticalScrollBarVisibility="Auto" BorderThickness="10">
             <ContentControl Content="{Binding WeatherForecastViewModel}" />
         </ScrollViewer>
     </Grid>

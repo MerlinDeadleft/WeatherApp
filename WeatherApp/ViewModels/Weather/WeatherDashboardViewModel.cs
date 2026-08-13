@@ -7,6 +7,8 @@ namespace WeatherApp.ViewModels.Weather;
 
 public class WeatherDashboardViewModel : ViewModelBase
 {
+    public event Action? OnWeatherDataUpdated;
+    
     private IWeatherService weatherService;
     private WeatherModel? weatherModel = null;
     
@@ -43,6 +45,7 @@ public class WeatherDashboardViewModel : ViewModelBase
     {
         CurrentWeatherViewModel.UpdateWeatherModel(weatherModel);
         WeatherForecastViewModel.UpdateWeatherModel(weatherModel);
+        OnWeatherDataUpdated?.Invoke();
     }
 
     private void HandleSelectedLocationChanged()
