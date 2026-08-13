@@ -11,8 +11,7 @@ public class MainWindowViewModel : ViewModelBase
     private IDialogService dialogService;
     private ISettingsService settingsService;
     
-    private SettingsModel settingsModel;
-    private bool useMetricUnits => settingsModel.UseMetric;
+    private bool useMetricUnits;
 
     public ICommand ExitCommand { get; }
     public ICommand OpenAboutWindowCommand { get; }
@@ -23,7 +22,8 @@ public class MainWindowViewModel : ViewModelBase
         set
         {
             if(useMetricUnits == value) return;
-            settingsService.UpdateSetting(ISettingsService.Setting.UseMetric, value);
+            useMetricUnits = value;
+            settingsService.UpdateSettings(settingsService.GetSettings() with{UseMetric = useMetricUnits});
             DispatchPropertyChanged();
         }
     }
@@ -32,8 +32,7 @@ public class MainWindowViewModel : ViewModelBase
     {
         this.dialogService = dialogService;
         this.settingsService = settingsService;
-        settingsService.OnSettingsUpdated += HandleSettingsUpdate;
-        settingsModel = settingsService.LoadSettings();
+        useMetricUnits = settingsService.GetSettings().UseMetric;
         
         ExitCommand = new RelayAction(ExecuteExitCommand);
         OpenAboutWindowCommand = new RelayAction(ExecuteOpenAboutWindowCommand);
@@ -53,10 +52,5 @@ public class MainWindowViewModel : ViewModelBase
     private void ExecuteOpenAboutWindowCommand(object? parameter)
     {
         dialogService.ShowAboutWindow();
-    }
-    
-    private void HandleSettingsUpdate()
-    {
-        settingsModel = settingsService.LoadSettings();
     }
 }

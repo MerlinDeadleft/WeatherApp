@@ -10,14 +10,13 @@ namespace WeatherApp.ViewModels;
 
 public class SidebarViewModel : ViewModelBase
 {
-    
     private readonly IWeatherService weatherService;
     private readonly ISettingsService settingsService;
-    
-    private SettingsModel settingsModel;
+
+    private List<string> savedLocations;
     private List<SidebarChange> currentChanges = new List<SidebarChange>();
     private readonly Regex locationNameRules = new Regex(@"^[\p{L}\p{N} ,.'’ʻ()/&–~-]+$");
-    private SidebarItemViewModel? selectedSidebarItem;
+    private SidebarItemViewModel selectedSidebarItem;
 
     public ICommand EnableAddingLocationCommand { get; }
     public ICommand AddLocationCommand { get; }
@@ -26,7 +25,16 @@ public class SidebarViewModel : ViewModelBase
     public ICommand SaveChangesCommand { get; }
     public ICommand DiscardChangesCommand { get; }
 
-    public ObservableCollection<SidebarItemViewModel> SavedLocationViewModels { get; }
+    public ObservableCollection<SidebarItemViewModel> SavedLocationViewModels
+    {
+        get;
+        private set
+        {
+            if(field == value) return;
+            field = value;
+            DispatchPropertyChanged();
+        }
+    }
 
     public bool IsSidebarEditActive
     {
@@ -81,13 +89,8 @@ public class SidebarViewModel : ViewModelBase
     {
         this.weatherService = weatherService;
         this.settingsService = settingsService;
-        this.settingsService.OnSettingsUpdated += HandleSettingsUpdate;
-        settingsModel = settingsService.LoadSettings();
-        
-        
-        var viewModels = settingsModel.Locations.Select(CreateSidebarItemViewModel);
-        SavedLocationViewModels = new ObservableCollection<SidebarItemViewModel>(viewModels);
-        SelectSidebarItem(SavedLocationViewModels.First());
+        savedLocations = settingsService.GetSettings().Locations.ToList();
+        CreateSavedLocationViewModels();
 
         EnableAddingLocationCommand = new RelayAction(ExecuteEnableAddingLocationCommand);
         AddLocationCommand = new RelayAction(ExecuteAddLocationCommand, CanExecuteAddLocationCommand);
@@ -95,6 +98,13 @@ public class SidebarViewModel : ViewModelBase
         EnableEditCommand = new RelayAction(ExecuteEnableEditCommand);
         SaveChangesCommand = new RelayAction(ExecuteSaveChangesCommand);
         DiscardChangesCommand = new RelayAction(ExecuteDiscardChangesCommand);
+    }
+
+    private void CreateSavedLocationViewModels()
+    {
+        var viewModels = savedLocations.Select(CreateSidebarItemViewModel);
+        SavedLocationViewModels = new ObservableCollection<SidebarItemViewModel>(viewModels);
+        SelectSidebarItem(SavedLocationViewModels.First());
     }
 
     private SidebarItemViewModel CreateSidebarItemViewModel(string locationName)
@@ -128,8 +138,8 @@ public class SidebarViewModel : ViewModelBase
     private void ExecuteAddLocationCommand(object? parameter)
     {
         SavedLocationViewModels.Add(CreateSidebarItemViewModel(AddedLocationName));
-        settingsModel.Locations.Add(AddedLocationName);
-        settingsService.UpdateSetting(ISettingsService.Setting.Locations, settingsModel.Locations);
+        savedLocations.Add(AddedLocationName);
+        settingsService.UpdateSettings(settingsService.GetSettings() with { Locations = savedLocations.ToList() });
         DisableAddingLocation();
     }
 
@@ -147,20 +157,15 @@ public class SidebarViewModel : ViewModelBase
     {
         foreach(var change in currentChanges)
         {
-            switch(change.operationType)
+            switch(change.Type)
             {
                 case SidebarChange.OperationType.Move:
-                    var location = settingsModel.Locations[change.FromIndex];
-                    settingsModel.Locations.RemoveAt(change.FromIndex);
-                    settingsModel.Locations.Insert(change.ToIndex, location);
+                    var location = savedLocations[change.FromIndex];
+                    savedLocations.RemoveAt(change.FromIndex);
+                    savedLocations.Insert(change.ToIndex, location);
                     break;
                 case SidebarChange.OperationType.Remove:
-                    settingsModel.Locations.RemoveAt(change.FromIndex);
-                    if(change.Item == selectedSidebarItem)
-                    {
-                        SelectSidebarItem(SavedLocationViewModels.First());
-                    }
-
+                    savedLocations.RemoveAt(change.FromIndex);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -168,96 +173,89 @@ public class SidebarViewModel : ViewModelBase
         }
 
         currentChanges.Clear();
-        settingsService.UpdateSetting(ISettingsService.Setting.Locations, settingsModel.Locations);
+        settingsService.UpdateSettings(settingsService.GetSettings() with  { Locations = savedLocations.ToList() });
         IsSidebarEditActive = false;
+        
+        if(SavedLocationViewModels.Contains(selectedSidebarItem))
+        {
+            SelectSidebarItem(SavedLocationViewModels.First());
+        }
     }
 
     private void ExecuteDiscardChangesCommand(object? parameter)
     {
-        for(int i = currentChanges.Count - 1; i >= 0; i--)
-        {
-            var change = currentChanges[i];
-            switch(change.operationType)
-            {
-                case SidebarChange.OperationType.Move:
-                    SavedLocationViewModels.Move(change.ToIndex, change.FromIndex);
-                    break;
-                case SidebarChange.OperationType.Remove:
-                    SavedLocationViewModels.Insert(change.FromIndex, change.Item);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        currentChanges.Clear();
         IsSidebarEditActive = false;
+        
+        if(currentChanges.Count == 0) return;
+        currentChanges.Clear();
+        SavedLocationViewModels.Clear();
+        CreateSavedLocationViewModels();
     }
 
-    private bool CanSidebarItemMoveUp(SidebarItemViewModel? item)
+    private bool CanSidebarItemMoveUp(SidebarItemViewModel item)
     {
         var index = SavedLocationViewModels.IndexOf(item);
         return index > 0;
     }
 
-    private void MoveSidebarItemUp(SidebarItemViewModel? item)
+    private void MoveSidebarItemUp(SidebarItemViewModel item)
     {
         var index = SavedLocationViewModels.IndexOf(item);
         SavedLocationViewModels.Move(index, index - 1);
 
         currentChanges.Add(new SidebarChange
         {
-            operationType = SidebarChange.OperationType.Move,
+            Type = SidebarChange.OperationType.Move,
             FromIndex = index,
             ToIndex = index - 1,
             Item = item
         });
     }
 
-    private bool CanSidebarItemMoveDow(SidebarItemViewModel? item)
+    private bool CanSidebarItemMoveDow(SidebarItemViewModel item)
     {
         var index = SavedLocationViewModels.IndexOf(item);
         return index < SavedLocationViewModels.Count - 1;
     }
 
-    private void MoveSidebarItemDown(SidebarItemViewModel? item)
+    private void MoveSidebarItemDown(SidebarItemViewModel item)
     {
         var index = SavedLocationViewModels.IndexOf(item);
         SavedLocationViewModels.Move(index, index + 1);
 
         currentChanges.Add(new SidebarChange
         {
-            operationType = SidebarChange.OperationType.Move,
+            Type = SidebarChange.OperationType.Move,
             FromIndex = index,
             ToIndex = index + 1,
             Item = item
         });
     }
 
-    private bool CanRemoveSidebarItem(SidebarItemViewModel? item)
+    private bool CanRemoveSidebarItem(SidebarItemViewModel item)
     {
         return item.LocationName != SettingsModel.IpBasedLocationName;
     }
 
-    private void RemoveSidebarItem(SidebarItemViewModel? item)
+    private void RemoveSidebarItem(SidebarItemViewModel item)
     {
         var index = SavedLocationViewModels.IndexOf(item);
         SavedLocationViewModels.RemoveAt(index);
 
         currentChanges.Add(new SidebarChange
         {
-            operationType = SidebarChange.OperationType.Remove,
+            Type = SidebarChange.OperationType.Remove,
             FromIndex = index,
             Item = item
         });
     }
 
-    private bool CanSelectSidebarItem(SidebarItemViewModel? item)
+    private bool CanSelectSidebarItem(SidebarItemViewModel item)
     {
         return !IsSidebarEditActive && item != selectedSidebarItem && !weatherService.IsFetching;
     }
 
-    private void SelectSidebarItem(SidebarItemViewModel? item)
+    private void SelectSidebarItem(SidebarItemViewModel item)
     {
         if(IsAddingLocationActive)
         {
@@ -270,11 +268,6 @@ public class SidebarViewModel : ViewModelBase
         weatherService.SelectedLocation = item.LocationName;
     }
 
-    private void HandleSettingsUpdate()
-    {
-        settingsModel = settingsService.LoadSettings();
-    }
-
     private class SidebarChange
     {
         public enum OperationType
@@ -283,7 +276,7 @@ public class SidebarViewModel : ViewModelBase
             Remove
         }
 
-        public OperationType operationType { get; set; }
+        public OperationType Type { get; set; }
         public int FromIndex { get; set; }
         public int ToIndex { get; set; }
         public SidebarItemViewModel Item { get; set; }

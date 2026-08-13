@@ -36,14 +36,14 @@ public class SidebarItemViewModel : ViewModelBase
 
     public SidebarItemViewModel(
         string locationName,
-        Action<SidebarItemViewModel?> moveUpAction,
-        Predicate<SidebarItemViewModel?> canMoveUp,
-        Action<SidebarItemViewModel?> moveDownAction,
-        Predicate<SidebarItemViewModel?> canMoveDown,
-        Action<SidebarItemViewModel?> removeAction,
-        Predicate<SidebarItemViewModel?> canRemove,
-        Action<SidebarItemViewModel?> selectItemAction,
-        Predicate<SidebarItemViewModel?> canSelectItem)
+        Action<SidebarItemViewModel> moveUpAction,
+        Predicate<SidebarItemViewModel> canMoveUp,
+        Action<SidebarItemViewModel> moveDownAction,
+        Predicate<SidebarItemViewModel> canMoveDown,
+        Action<SidebarItemViewModel> removeAction,
+        Predicate<SidebarItemViewModel> canRemove,
+        Action<SidebarItemViewModel> selectItemAction,
+        Predicate<SidebarItemViewModel> canSelectItem)
     {
         LocationName = locationName;
         MoveUpCommand = new RelayAction(_ => moveUpAction(this), _ => canMoveUp(this));

@@ -4,11 +4,11 @@ using WeatherApp.Services;
 
 namespace WeatherApp.ViewModels.Weather;
 
-public class HourlyWeatherForecastItemViewModel : ViewModelBase
+public class HourlyWeatherForecastItemViewModel : ViewModelBase, IDisposable
 {
     private HourlyConditions hourlyConditions;
     private ISettingsService settingsService;
-    private SettingsModel settingsModel;
+    private bool useMetric;
 
     public string ForecastTime => GetForecastTime();
     public string WeatherIconUrl => GetWeatherIconUrl();
@@ -25,8 +25,13 @@ public class HourlyWeatherForecastItemViewModel : ViewModelBase
     {
         this.settingsService = settingsService;
         this.settingsService.OnSettingsUpdated += HandleSettingsUpdated;
-        settingsModel = settingsService.LoadSettings();
+        useMetric = settingsService.GetSettings().UseMetric;
         this.hourlyConditions = hourlyConditions;
+    }
+    
+    public void Dispose()
+    {
+        settingsService.OnSettingsUpdated -= HandleSettingsUpdated;
     }
 
     private string GetForecastTime()
@@ -44,7 +49,7 @@ public class HourlyWeatherForecastItemViewModel : ViewModelBase
 
     private string GetTemperature()
     {
-        return settingsModel.UseMetric
+        return useMetric
             ? $"{hourlyConditions.TempC}°C"
             : $"{hourlyConditions.TempF}°F";
     }
@@ -56,7 +61,7 @@ public class HourlyWeatherForecastItemViewModel : ViewModelBase
 
     private string GetFeelsLikeTemperature()
     {
-        return settingsModel.UseMetric
+        return useMetric
             ? $"Feels like: {hourlyConditions.FeelsLikeC}°C"
             : $"Feels like: {hourlyConditions.FeelsLikeF}°F";
     }
@@ -68,7 +73,7 @@ public class HourlyWeatherForecastItemViewModel : ViewModelBase
 
     private string GetPrecipitation()
     {
-        return settingsModel.UseMetric
+        return useMetric
             ? $"Precipitation: {hourlyConditions.PrecipMM} mm"
             : $"Precipitation: {hourlyConditions.PrecipInches} in";
     }
@@ -80,7 +85,7 @@ public class HourlyWeatherForecastItemViewModel : ViewModelBase
 
     private string GetWindSpeedAndDirection()
     {
-        return settingsModel.UseMetric
+        return useMetric
             ? $"{hourlyConditions.WindSpeedKmph}-{hourlyConditions.WindGustKmph} km/h {hourlyConditions.WindDir16Point}"
             : $"{hourlyConditions.WindSpeedMiles}-{hourlyConditions.WindGustMiles} mph {hourlyConditions.WindDir16Point}";
     }
@@ -94,7 +99,7 @@ public class HourlyWeatherForecastItemViewModel : ViewModelBase
 
     private void HandleSettingsUpdated()
     {
-        settingsModel = settingsService.LoadSettings();
+        useMetric = settingsService.GetSettings().UseMetric;
         DispatchPropertyChanged(null);
     }
 }

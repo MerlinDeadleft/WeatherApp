@@ -1,22 +1,15 @@
 using System.IO;
 using System.Text.Json;
-using System.Windows;
 using WeatherApp.Models;
 
 namespace WeatherApp.Services;
 
 public interface ISettingsService
 {
-    public enum Setting
-    {
-        Locations,
-        UseMetric
-    }
-    
-    public event Action OnSettingsUpdated;
+    event Action OnSettingsUpdated;
 
-    public SettingsModel LoadSettings();
-    public void UpdateSetting(Setting setting, object value);
+    SettingsModel GetSettings();
+    void UpdateSettings(SettingsModel settings);
 }
 
 public class SettingsService : ISettingsService
@@ -24,70 +17,60 @@ public class SettingsService : ISettingsService
     private static readonly string SettingsFileDirectory = AppContext.BaseDirectory;
     private static readonly string SettingsFileName = "settings.json";
 
-    public event Action OnSettingsUpdated;
-    
-    private SettingsModel? settingsModel = null;
+    public event Action? OnSettingsUpdated;
 
-    public SettingsModel LoadSettings()
+    private SettingsModel? currentSettings;
+    private SettingsModel CurrentSettings
     {
-        if(settingsModel != null)
+        get
         {
-            return settingsModel.Value;
+            currentSettings ??= LoadSettings();
+            return currentSettings.Value;
         }
+        set => currentSettings = value;
+    }
 
+    public SettingsModel GetSettings() => CurrentSettings;
+
+    public void UpdateSettings(SettingsModel settings)
+    {
+        CurrentSettings = settings;
+        SaveSettings(CurrentSettings);
+    }
+
+    private SettingsModel LoadSettings()
+    {
+        SettingsModel? settings = null;
         if(File.Exists(Path.Combine(SettingsFileDirectory, SettingsFileName)))
         {
-            var json = File.ReadAllText(Path.Combine(SettingsFileDirectory, SettingsFileName));
-            settingsModel = JsonSerializer.Deserialize<SettingsModel>(json);
-            return settingsModel.Value;
+            try
+            {
+                var json = File.ReadAllText(Path.Combine(SettingsFileDirectory, SettingsFileName));
+                settings = JsonSerializer.Deserialize<SettingsModel>(json);
+                return settings.Value;
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine($"Error loading settings file: {e.Message}\n\nContinuing with fresh save file.");
+            }
         }
 
-        settingsModel = new SettingsModel()
+        settings = new SettingsModel()
         {
             Locations = new List<string> { SettingsModel.IpBasedLocationName },
             UseMetric = true
         };
 
-        SaveSettings(settingsModel.Value);
-        return settingsModel.Value;
+        SaveSettings(settings.Value, true);
+        return settings.Value;
     }
 
-    private void SaveSettings(SettingsModel settings)
+    private void SaveSettings(SettingsModel settings, bool silent = false)
     {
         var json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(Path.Combine(SettingsFileDirectory, SettingsFileName), json);
+        
+        if(silent) return;
         OnSettingsUpdated?.Invoke();
-    }
-
-    public void UpdateSetting(ISettingsService.Setting setting, object value)
-    {
-        var settings = settingsModel.Value;
-        switch(setting)
-        {
-            case ISettingsService.Setting.Locations:
-                if(value is not List<string> list)
-                {
-                    MessageBox.Show("Can not update saved locations. Provided value is not of type List<string>.",
-                        "Error: SettingsService.UpdateSetting", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-
-                settings.Locations = list;
-                break;
-            case ISettingsService.Setting.UseMetric:
-                if(value is not bool b)
-                {
-                    MessageBox.Show("Can not update use metric setting. Provided value is not of type bool.",
-                        "Error: SettingsService.UpdateSetting", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-                settings.UseMetric = b;
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(setting), setting, null);
-        }
-
-        settingsModel = settings;
-        SaveSettings(settingsModel.Value);
     }
 }

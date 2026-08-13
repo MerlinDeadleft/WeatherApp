@@ -8,7 +8,7 @@ namespace WeatherApp.ViewModels.Weather;
 public class CurrentWeatherViewModel : ViewModelBase
 {
     private readonly ISettingsService settingsService;
-    private SettingsModel settingsModel;
+    private bool useMetric;
     private WeatherModel? weatherModel;
 
     public string LocationName => GetLocationName();
@@ -27,7 +27,7 @@ public class CurrentWeatherViewModel : ViewModelBase
     {
         this.settingsService = settingsService;
         this.settingsService.OnSettingsUpdated += HandleSettingsUpdated;
-        settingsModel = this.settingsService.LoadSettings();
+        useMetric = this.settingsService.GetSettings().UseMetric;
     }
 
     public void UpdateWeatherModel(WeatherModel? weatherModel)
@@ -85,7 +85,7 @@ public class CurrentWeatherViewModel : ViewModelBase
         if(weatherModel == null || weatherModel.Data == null)
             return "";
 
-        return settingsModel.UseMetric
+        return useMetric
             ? $"{weatherModel.Data.Value.CurrentCondition[0].TempC}°C"
             : $"{weatherModel.Data.Value.CurrentCondition[0].TempF}°F";
     }
@@ -103,7 +103,7 @@ public class CurrentWeatherViewModel : ViewModelBase
         if(weatherModel == null || weatherModel.Data == null)
             return "";
 
-        var temperature = settingsModel.UseMetric
+        var temperature = useMetric
             ? $"{weatherModel.Data.Value.CurrentCondition[0].FeelsLikeC}°C"
             : $"{weatherModel.Data.Value.CurrentCondition[0].FeelsLikeF}°F";
 
@@ -123,7 +123,7 @@ public class CurrentWeatherViewModel : ViewModelBase
         if(weatherModel == null || weatherModel.Data == null)
             return "";
 
-        var precipitation = settingsModel.UseMetric
+        var precipitation = useMetric
             ? $"{weatherModel.Data.Value.CurrentCondition[0].PrecipMM:0.0#} mm"
             : $"{weatherModel.Data.Value.CurrentCondition[0].PrecipInches:0.0#} in";
 
@@ -135,7 +135,7 @@ public class CurrentWeatherViewModel : ViewModelBase
         if(weatherModel == null || weatherModel.Data == null)
             return "";
 
-        var windSpeed = settingsModel.UseMetric
+        var windSpeed = useMetric
             ? $"{weatherModel.Data.Value.CurrentCondition[0].WindSpeedKmph} km/h"
             : $"{weatherModel.Data.Value.CurrentCondition[0].WindSpeedMiles} mph";
 
@@ -154,7 +154,7 @@ public class CurrentWeatherViewModel : ViewModelBase
 
     private void HandleSettingsUpdated()
     {
-        settingsModel = settingsService.LoadSettings();
+        useMetric = settingsService.GetSettings().UseMetric;
         DispatchPropertyChanged(null);
     }
 }
