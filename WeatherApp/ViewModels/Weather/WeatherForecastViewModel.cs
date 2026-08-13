@@ -1,14 +1,21 @@
 using System.Collections.ObjectModel;
 using WeatherApp.Core;
 using WeatherApp.Models;
+using WeatherApp.ViewModels.Weather.Factories;
 
 namespace WeatherApp.ViewModels.Weather;
 
 public class WeatherForecastViewModel : ViewModelBase
 {
+    private IWeatherForecastItemViewModelFactory weatherItemViewModelFactory;
     private WeatherModel? weatherModel;
 
     public ObservableCollection<WeatherForecastItemViewModel> WeatherForecasts { get; private set; }
+
+    public WeatherForecastViewModel(IWeatherForecastItemViewModelFactory weatherForecastItemViewModelFactory)
+    {
+        this.weatherItemViewModelFactory = weatherForecastItemViewModelFactory;
+    }
     
     public void UpdateWeatherModel(WeatherModel? weatherModel)
     {
@@ -26,6 +33,6 @@ public class WeatherForecastViewModel : ViewModelBase
 
     private WeatherForecastItemViewModel CreateWeatherForecastItemViewModels(ForecastData forecastData)
     {
-        return new WeatherForecastItemViewModel(forecastData);
+        return weatherItemViewModelFactory.Create(forecastData);
     }
 }

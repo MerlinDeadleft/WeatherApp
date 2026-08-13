@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using WeatherApp.Services;
 using WeatherApp.ViewModels;
 using WeatherApp.ViewModels.Weather;
+using WeatherApp.ViewModels.Weather.Factories;
 
 namespace WeatherApp;
 
@@ -29,6 +30,9 @@ public partial class App : Application
         serviceCollection.AddTransient<WeatherDashboardViewModel>();
         serviceCollection.AddTransient<CurrentWeatherViewModel>();
         serviceCollection.AddTransient<WeatherForecastViewModel>();
+        
+        serviceCollection.AddSingleton<IWeatherForecastItemViewModelFactory, WeatherForecastItemViewModelFactory>();
+        serviceCollection.AddSingleton<IHourlyWeatherForecastItemViewModelFactory, HourlyWeatherForecastItemViewModelFactory>();
         
         Services = serviceCollection.BuildServiceProvider();
     }

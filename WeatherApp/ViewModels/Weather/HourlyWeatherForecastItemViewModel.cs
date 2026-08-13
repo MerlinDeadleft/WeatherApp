@@ -1,11 +1,14 @@
 using WeatherApp.Core;
 using WeatherApp.Models;
+using WeatherApp.Services;
 
 namespace WeatherApp.ViewModels.Weather;
 
 public class HourlyWeatherForecastItemViewModel : ViewModelBase
 {
     private HourlyConditions hourlyConditions;
+    private ISettingsService settingsService;
+    private SettingsModel settingsModel;
 
     public string ForecastTime => GetForecastTime();
     public string WeatherIconUrl => GetWeatherIconUrl();
@@ -14,11 +17,15 @@ public class HourlyWeatherForecastItemViewModel : ViewModelBase
     public string FeelsLikeTemperature => GetFeelsLikeTemperature();
     public string Humidity => GetHumidity();
     public string Precipitation => GetPrecipitation();
+    public string ChanceOfRain => GetChanceOfRain();
     public string WindSpeedAndDirection => GetWindSpeedAndDirection();
     public int WindDirectionArrowRotation => GetWinDirectionArrowRotation();
 
-    public HourlyWeatherForecastItemViewModel(HourlyConditions hourlyConditions)
+    public HourlyWeatherForecastItemViewModel(HourlyConditions hourlyConditions, ISettingsService settingsService)
     {
+        this.settingsService = settingsService;
+        this.settingsService.OnSettingsUpdated += HandleSettingsUpdated;
+        settingsModel = settingsService.LoadSettings();
         this.hourlyConditions = hourlyConditions;
     }
 
@@ -37,7 +44,9 @@ public class HourlyWeatherForecastItemViewModel : ViewModelBase
 
     private string GetTemperature()
     {
-        return $"{hourlyConditions.TempC}°C";
+        return settingsModel.UseMetric
+            ? $"{hourlyConditions.TempC}°C"
+            : $"{hourlyConditions.TempF}°F";
     }
 
     private string GetWeatherDescription()
@@ -47,7 +56,9 @@ public class HourlyWeatherForecastItemViewModel : ViewModelBase
 
     private string GetFeelsLikeTemperature()
     {
-        return $"Feels like: {hourlyConditions.FeelsLikeC}°C";
+        return settingsModel.UseMetric
+            ? $"Feels like: {hourlyConditions.FeelsLikeC}°C"
+            : $"Feels like: {hourlyConditions.FeelsLikeF}°F";
     }
 
     private string GetHumidity()
@@ -57,12 +68,21 @@ public class HourlyWeatherForecastItemViewModel : ViewModelBase
 
     private string GetPrecipitation()
     {
-        return $"Precipitation: {hourlyConditions.PrecipMM} mm";
+        return settingsModel.UseMetric
+            ? $"Precipitation: {hourlyConditions.PrecipMM} mm"
+            : $"Precipitation: {hourlyConditions.PrecipInches} in";
+    }
+
+    private string GetChanceOfRain()
+    {
+        return $"Chance of rain: {hourlyConditions.ChanceOfRain}%";
     }
 
     private string GetWindSpeedAndDirection()
     {
-        return $"{hourlyConditions.WindSpeedKmph}-{hourlyConditions.WindGustKmph} km/h {hourlyConditions.WindDir16Point}";
+        return settingsModel.UseMetric
+            ? $"{hourlyConditions.WindSpeedKmph}-{hourlyConditions.WindGustKmph} km/h {hourlyConditions.WindDir16Point}"
+            : $"{hourlyConditions.WindSpeedMiles}-{hourlyConditions.WindGustMiles} mph {hourlyConditions.WindDir16Point}";
     }
 
     private int GetWinDirectionArrowRotation()
@@ -70,5 +90,11 @@ public class HourlyWeatherForecastItemViewModel : ViewModelBase
         // Add 180 as arrow image points up by default. Arrow would otherwise point in the direction
         // wind comes from instead of where it's going
         return hourlyConditions.WindDirDegree + 180;
+    }
+
+    private void HandleSettingsUpdated()
+    {
+        settingsModel = settingsService.LoadSettings();
+        DispatchPropertyChanged(null);
     }
 }

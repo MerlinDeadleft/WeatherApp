@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:WeatherApp.UserControls.Weather"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300" Background="LightGray" Margin="5,0" Padding="10">
+             d:DesignHeight="300" d:DesignWidth="300" BorderBrush="LightGray" BorderThickness="2" Margin="5,0" Padding="10">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="65" />
@@ -16,7 +16,7 @@
             <RowDefinition Height="70" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <TextBlock Grid.ColumnSpan="2" Text="{Binding ForecastTime}" />
+        <TextBlock Grid.ColumnSpan="2" Text="{Binding ForecastTime}" Margin="0,0,0,5"/>
         <Image Grid.Row="1" Grid.Column="0" Source="{Binding WeatherIconUrl}" Margin="0,5,5,5" />
         <StackPanel Grid.Row="1" Grid.Column="1">
             <TextBlock Text="{Binding Temperature}" />
@@ -26,6 +26,7 @@
             <TextBlock Text="{Binding FeelsLikeTemperature}" />
             <TextBlock Text="{Binding Humidity}" />
             <TextBlock Text="{Binding Precipitation}" />
+            <TextBlock Text="{Binding ChanceOfRain}" />
             <StackPanel Orientation="Horizontal">
                 <TextBlock>Wind</TextBlock>
                 <Image Source="/Assets/Images/navigation.png" Height="20" Margin="5,0,0,0">
