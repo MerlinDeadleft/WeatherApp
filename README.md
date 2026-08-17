@@ -1,6 +1,6 @@
 # WeatherApp
 
-<img src="./Screenshot/screenshot.png" width=800>
+<img src="./Screenshot/Screenshot.png" width=800>
 
 A weather app built using WPF and C# to display current weather data.
 <br>The primary goal of this project was to implement a clean software architecture using the MVVM (Model-View-ViewModel) pattern and handling asynchronous API requests.
